@@ -1,38 +1,35 @@
 name: Pipeline CI_CD CRUD
 
 on:
-push:
-  branches:
-    - main
-pull_request:
-  branches:
-    - main
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
 
 jobs:
-build-and-package:
-runs-on: windows-latest
+  build-and-package:
+    runs-on: windows-latest
 
-steps:  
-- name: baixar codigo
-  uses: actions/checkout@v4
+    steps:
+      - name: baixar codigo
+        uses: actions/checkout@v4
 
-- name: Configurar o .NET 8
-  uses: actions/setup-dotnet@v4
-  whith:
-    dotnet-version: 8.0.x
+      - name: Configurar o .NET 8
+        uses: actions/setup-dotnet@v4
+        with: # Fixed typo: was "whith"
+          dotnet-version: '8.0.x'
 
-- name: Restaurar pacotes
-  run: dotnet restore
+      - name: Restaurar pacotes
+        run: dotnet restore
 
-- name: Compilar (Build)
-  run: dotnet build --configuration Release --no-restore
+      - name: Compilar (Build)
+        run: dotnet build --configuration Release --no-restore
 
-- name: Publicar (Gerar o .exe)
-  run: dotnet publish -c Release -o ./meu-app-pronto
+      - name: Publicar (Gerar o .exe)
+        run: dotnet publish -c Release -o ./meu-app-pronto
 
-- name: Salvar executável no GitHub
-  uses: actions/upload-artifact@v4
-  with:
-        name: executavel-do-crud
-        path: ./meu-app-pronto/
-
+      - name: Salvar executável no GitHub
+        uses: actions/upload-artifact@v4
+        with:
+          name: executavel-do-crud
+          path: ./meu-app-pronto/
