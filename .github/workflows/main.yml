@@ -15,11 +15,10 @@ jobs:
     steps:
       - name: baixar codigo
         uses: actions/checkout@v4
-
-      - name: Configurar o .NET 8
+      - name: Configurar o .NET 10
         uses: actions/setup-dotnet@v4
-        with: # Fixed typo: was "whith"
-          dotnet-version: '8.0.x'
+        with:
+          dotnet-version: '10.0.x'
 
       - name: Restaurar pacotes
         run: dotnet restore
