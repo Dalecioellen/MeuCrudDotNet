@@ -1,20 +1,36 @@
-﻿using CRUD_CI_CD;
+﻿
+using CRUD_CI_CD;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using System.Runtime.InteropServices.Marshalling;
+using Microsoft.Extensions.Configuration;
 
 //-- configuração do banco 
 
+
+var config = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory()) // garante que ele ache o appsettings.json
+    .AddJsonFile("appsettingsDev.json")
+    .AddEnvironmentVariables()
+    .Build();
+
+
+// Lê a string de conexão do appsettings.json ou das variáveis de ambiente  
+var connectionString = config.GetConnectionString("DefaultConnection");
+
+Console.WriteLine($"Usando conexão: {connectionString}");
+// Se existir uma variável de ambiente no yaml ConnectionStrings__DefaultConnection, ela sobrescreve o valor do JSON.
+
+// Exemplo de uso com Entity Framework
 var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-optionsBuilder.UseSqlServer("Server=DESKTOP-63LD54P\\SQLEXPRESS;Database=CRUD_CI_CD;Trusted_Connection=True;TrustServerCertificate=True;");
+optionsBuilder.UseSqlServer(connectionString);
 
 using  var db = new AppDbContext(optionsBuilder.Options);
-db.Database.EnsureCreated();
+db.Database.EnsureCreated(); //' Garante que o banco de dados seja criado sem precisar de migrations ideal pára testes//
 
 
-bool rodando = true;
 
-while (rodando)
+bool start = true;
+
+while (start)
 {
     Console.WriteLine("Escolha uma opção:");
     Console.WriteLine("1 - Criar produto");
@@ -38,7 +54,7 @@ while (rodando)
             DeletarProduto(db);
             break;
         case "5":
-            rodando = false;
+            start = false;
             break;
         default:
             Console.WriteLine("Opção inválida.");
