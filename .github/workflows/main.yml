@@ -23,11 +23,11 @@ jobs:
       - name: Restaurar pacotes
         run: dotnet restore
 
-      - name: Rodar testes
-        run: dotnet test --no-build --verbosity normal
-
       - name: Compilar (Build)
         run: dotnet build --configuration Release --no-restore
+
+      - name: Rodar testes
+        run: dotnet test --configuration Release --no-build --verbosity normal
 
       - name: Publicar (Gerar o .exe)
         run: dotnet publish -c Release -o ./meu-app-pronto
